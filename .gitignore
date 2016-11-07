@@ -1,0 +1,8 @@
+*.o
+*.a
+*.so
+*.db
+.vscode
+rmutil/test_vector
+src/datastore
+src/.datastore
