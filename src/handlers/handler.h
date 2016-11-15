@@ -5,8 +5,8 @@ typedef struct HandlerResponse{
 	RedisModuleString* value;
 } HandlerResponse;
 
-typedef HandlerResponse* GetTypeHandler(RedisModuleString* key);
-typedef HandlerResponse* SetTypeHandler(RedisModuleString* key, RedisModuleString* value);
+typedef HandlerResponse* GetTypeHandler(RedisModuleCtx *ctx, RedisModuleString* key);
+typedef HandlerResponse* SetTypeHandler(RedisModuleCtx *ctx, RedisModuleString* key, RedisModuleString* value);
 
 typedef struct Handler {
 	GetTypeHandler *get;

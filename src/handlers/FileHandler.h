@@ -1,3 +1,3 @@
-HandlerResponse* GetFileHandler(RedisModuleString* key);
+HandlerResponse* GetFileHandler(RedisModuleCtx *ctx, RedisModuleString* key);
 
-HandlerResponse* SetFileHandler(RedisModuleString* key, RedisModuleString* value);
+HandlerResponse* SetFileHandler(RedisModuleCtx *ctx, RedisModuleString* key, RedisModuleString* value);

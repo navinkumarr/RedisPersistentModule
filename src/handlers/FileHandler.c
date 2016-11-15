@@ -42,7 +42,7 @@ char *join(int l, ...){
 
 char *getDatastorePath(){
 	
-	char *dataDirectory = "/datastore/";
+	char *dataDirectory = "/.datastore/";
 
 	char cwd[1024];
 	if (getcwd(cwd, sizeof(cwd)) == NULL){
@@ -79,7 +79,7 @@ HandlerResponse* createHandlerResponse(int isSuccess, RedisModuleString* value){
 }
 
 
-HandlerResponse* GetFileHandler(RedisModuleString* key){
+HandlerResponse* GetFileHandler(RedisModuleCtx *ctx, RedisModuleString* key){
 
 	size_t klen = 0;
 	char buff[255];
@@ -94,23 +94,24 @@ HandlerResponse* GetFileHandler(RedisModuleString* key){
 
 	fptr = fopen(finalPath, "r");
 
-	if(fptr == NULL)
-	{
+	if(fptr == NULL){
 	    return createHandlerResponse(0, key);
 	}
 
-	fscanf(fptr, "%s", buff);
+	if(EOF == fscanf(fptr, "%s", buff)){
+		return createHandlerResponse(0, key);	
+	}
 
-	printf("data from file is %s\n", buff);
+	RedisModuleString* response = RedisModule_CreateString(ctx, buff, strlen(buff));
 
 	fclose(fptr);
 	free(basePath);
 	free(finalPath);
 
-	return createHandlerResponse(1, key);
+	return createHandlerResponse(1, response);
 }
 
-HandlerResponse* SetFileHandler(RedisModuleString* key, RedisModuleString* value){
+HandlerResponse* SetFileHandler(RedisModuleCtx *ctx, RedisModuleString* key, RedisModuleString* value){
 	
 	if(makeDataStoreDirectory() == -1){
 		return createHandlerResponse(0, key);

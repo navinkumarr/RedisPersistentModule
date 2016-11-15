@@ -10,11 +10,11 @@
 
 #include "handlers/handler.h"
 
-/* PARSE.GET <name>
+/* PARSE.GET <key>
 */
 int PersistentGetCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
 
-	// we must have at least 4 args
+	// we must have at least ! args
 	if (argc < 1) {
 		return RedisModule_WrongArity(ctx);
 	}
@@ -39,7 +39,7 @@ int PersistentGetCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc
 
 	RedisModuleString *value = RedisModule_CreateStringFromCallReply(rep);
 
-	HandlerResponse* response = handler->get(value);
+	HandlerResponse* response = handler->get(ctx, value);
 
 	free(response);
 	free(handler);
@@ -48,11 +48,11 @@ int PersistentGetCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc
 	return REDISMODULE_OK;
 }
 
-/* EXAMPLE.SET <name> <value>
+/* PERSIST.SET <key> <value>
 */
 int PersistentSetCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
 
-	// we must have at least 4 args
+	// we must have at least 2 args
 	if (argc < 2) {
 		return RedisModule_WrongArity(ctx);
 	}
@@ -65,7 +65,7 @@ int PersistentSetCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc
 
 	Handler* handler = GetHandler();
 
-	HandlerResponse* response = handler->set(key, value);
+	HandlerResponse* response = handler->set(ctx, key, value);
 
 	if(response->isSuccess == 0){
 		free(response);
